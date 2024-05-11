@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Product from './Product';
 
-const APP_PRODUCTS_QUERY = gql`
+export const ALL_PRODUCTS_QUERY = gql`
   query ALL_PRODUCTS_QUERY {
     allProducts {
       id
@@ -27,7 +27,7 @@ const ProductsListStyles = styled.div`
 `;
 
 export default function Products() {
-  const { loading, error, data } = useQuery(APP_PRODUCTS_QUERY);
+  const { loading, error, data } = useQuery(ALL_PRODUCTS_QUERY);
   console.log(loading, error, data);
 
   if (loading) return <p>Loading...</p>;
