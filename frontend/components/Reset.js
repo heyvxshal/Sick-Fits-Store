@@ -4,63 +4,53 @@ import Form from './styles/Form';
 import useForm from '../lib/useForm';
 import Error from './ErrorMessage';
 
-const SIGNUP_MUTATION = gql`
-  mutation SIGNUP_MUTATION(
+const RESET_MUTATION = gql`
+  mutation RESET_MUTATION(
     $email: String!
     $password: String!
-    $name: String!
+    $token: String!
   ) {
-    createUser(data: { email: $email, name: $name, password: $password }) {
-      email
-      name
-      id
+    redeemUserPasswordResetToken(
+      email: $email
+      token: $token
+      password: $password
+    ) {
+      code
+      message
     }
   }
 `;
 
-export default function SignUp() {
+export default function Reset({ token }) {
   const { inputs, handleChange, resetForm } = useForm({
     email: '',
     password: '',
-    name: '',
+    token,
   });
 
-  const [signup, { data, error }] = useMutation(SIGNUP_MUTATION, {
+  const [reset, { data, error }] = useMutation(RESET_MUTATION, {
     variables: inputs,
-
-    // Refetch the currently logged in user
-    // refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
 
+  const Serror = data?.redeemUserPasswordResetToken?.code
+    ? data?.redeemUserPasswordResetToken
+    : undefined;
+  console.log(error);
   return (
     <Form
       method="POST"
       onSubmit={async (e) => {
         e.preventDefault();
-        await signup().catch(console.error);
+        await reset().catch(console.error);
         resetForm();
       }}
     >
-      <Error error={error} />
+      <Error error={error || Serror} />
       <fieldset>
-        {data?.createUser && (
-          <p>
-            Signed up Successfully ! - ({data.createUser.email}) Please Log in.
-          </p>
+        {data?.redeemUserPasswordResetToken === null && (
+          <p>Password updated successfully</p>
         )}
-        <h2>Sign Up For an Account</h2>
-        <label htmlFor="name">
-          Name
-          <input
-            name="name"
-            type="text"
-            placeholder="Your Name"
-            autoComplete="name"
-            value={inputs.name}
-            onChange={handleChange}
-          />
-        </label>
-
+        <h2>Reset your Password</h2>
         <label htmlFor="email">
           Email
           <input
@@ -85,7 +75,7 @@ export default function SignUp() {
           />
         </label>
 
-        <button type="submit">Sign In !</button>
+        <button type="submit">Request Reset</button>
       </fieldset>
     </Form>
   );
