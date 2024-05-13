@@ -10,6 +10,7 @@ import { Product } from "./schemas/Product";
 import { ProductImage } from "./schemas/ProductImage";
 import { insertSeedData } from "./seed-data";
 import { sendPasswordResetEmail } from "./lib/mail";
+import { CartItem } from "./schemas/Cart";
 
 const databaseURL =
   process.env.DATABASE_URL || "mongodb://localhost/keystone-sick-fits";
@@ -59,6 +60,7 @@ export default withAuth(
       User,
       Product,
       ProductImage,
+      CartItem,
     }),
     ui: {
       // Show ui only for user who pass this test

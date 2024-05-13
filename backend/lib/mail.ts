@@ -35,13 +35,11 @@ export async function sendPasswordResetEmail(
     from: "test@example.com",
     subject: "Your password reset token!",
     html: makeEmail(`Your password Reset token is here
-    
-    
     <a href="${process.env.FRONTEND_URL}/reset?token=${resetToken}">Click Here to reset</a>
     `),
   });
 
   if (process.env.MAIL_USER.includes("ethereal.email")) {
-    console.log(`✉️ Message Sent! Preview it at ${getTestMessageUrl(info)}`);
+    console.log(`📩 Message Sent! Preview it at ${getTestMessageUrl(info)}`);
   }
 }

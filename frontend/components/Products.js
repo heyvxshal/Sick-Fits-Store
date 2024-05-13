@@ -34,7 +34,6 @@ export default function Products({ page }) {
       first: perPage,
     },
   });
-  console.log(loading, error, data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error Occured: {error.message}</p>;
