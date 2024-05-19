@@ -12,6 +12,8 @@ import { insertSeedData } from "./seed-data";
 import { sendPasswordResetEmail } from "./lib/mail";
 import { CartItem } from "./schemas/Cart";
 import { extendGraphqlSchema } from "./mutations";
+import { OrderItem } from "./schemas/OrderItem";
+import { Order } from "./schemas/Order";
 
 const databaseURL =
   process.env.DATABASE_URL || "mongodb://localhost/keystone-sick-fits";
@@ -62,6 +64,8 @@ export default withAuth(
       Product,
       ProductImage,
       CartItem,
+      OrderItem,
+      Order,
     }),
     extendGraphqlSchema, // extend graphQL Schema
     ui: {
