@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import CartStyles from './styles/CartStyles';
-import { useUser } from './User';
+import CloseButton from './styles/CloseButton';
 import Supreme from './styles/Supreme';
 import formatMoney from '../lib/formatMoney';
+import { useUser } from './User';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import { useCart } from '../lib/cartState';
-import CloseButton from './styles/CloseButton';
 import RemoveFromCart from './RemoveFromCart';
+import Checkout from './Checkout';
 
 const CartItemStyles = styled.li`
   padding: 1rem 0;
@@ -15,7 +16,6 @@ const CartItemStyles = styled.li`
   grid-template-columns: auto 1fr auto;
   img {
     margin-right: 1rem;
-    border-radius: 10px;
   }
   h3,
   p {
@@ -36,7 +36,10 @@ function CartItem({ cartItem }) {
       <div>
         <h3>{product.name}</h3>
         <p>
-          {formatMoney(product.price)} &times; {cartItem.quantity}
+          {formatMoney(product.price * cartItem.quantity)}-
+          <em>
+            {cartItem.quantity} &times; {formatMoney(product.price)} each
+          </em>
         </p>
       </div>
       <RemoveFromCart id={cartItem.id} />
@@ -46,13 +49,13 @@ function CartItem({ cartItem }) {
 
 export default function Cart() {
   const me = useUser();
-  const { cartOpen, toggleCart } = useCart();
+  const { cartOpen, closeCart } = useCart();
   if (!me) return null;
   return (
     <CartStyles open={cartOpen}>
       <header>
         <Supreme>{me.name}'s Cart</Supreme>
-        <CloseButton onClick={toggleCart}>&times;</CloseButton>
+        <CloseButton onClick={closeCart}>&times;</CloseButton>
       </header>
       <ul>
         {me.cart.map((cartItem) => (
@@ -60,7 +63,8 @@ export default function Cart() {
         ))}
       </ul>
       <footer>
-        <p>{formatMoney(calcTotalPrice(me.cart))} </p>
+        <p>{formatMoney(calcTotalPrice(me.cart))}</p>
+        <Checkout />
       </footer>
     </CartStyles>
   );
