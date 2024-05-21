@@ -49,13 +49,13 @@ function CartItem({ cartItem }) {
 
 export default function Cart() {
   const me = useUser();
-  const { cartOpen, closeCart } = useCart();
+  const { cartOpen, toggleCart } = useCart();
   if (!me) return null;
   return (
     <CartStyles open={cartOpen}>
       <header>
         <Supreme>{me.name}'s Cart</Supreme>
-        <CloseButton onClick={closeCart}>&times;</CloseButton>
+        <CloseButton onClick={toggleCart}>&times;</CloseButton>
       </header>
       <ul>
         {me.cart.map((cartItem) => (

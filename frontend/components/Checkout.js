@@ -48,33 +48,43 @@ function CheckoutForm() {
   const router = useRouter();
   const { closeCart } = useCart();
   const [checkout, { error: graphQLError }] = useMutation(
-    CREATE_ORDER_MUTATION,
-    {
-      refetchQueries: [{ query: CURRENT_USER_QUERY }],
-    }
+    CREATE_ORDER_MUTATION
   );
   async function handleSubmit(e) {
     // 1. Stop the form from submitting and turn the loader one
     e.preventDefault();
     setLoading(true);
+
     // 2. Start the page transition
     nProgress.start();
+
     // 3. Create the payment method via stripe (Token comes back here if successful)
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
       card: elements.getElement(CardElement),
     });
+
     console.log(paymentMethod);
+
     // 4. Handle any errors from stripe
     if (error) {
       setError(error);
       nProgress.done();
-      return; // stops the checkout from happening
+      return; // stops checkout from happening
     }
     // 5. Send the token from step 3 to our keystone server, via a custom mutation!
+    const order = await checkout({
+      variables: {
+        token: paymentMethod.id,
+      },
+    });
+    console.log(`Finished with the order`);
+    console.log(order);
 
     // 6. Change the page to view the order
+
     // 7. Close the cart
+
     // 8. turn the loader off
     setLoading(false);
     nProgress.done();
