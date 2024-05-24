@@ -14,6 +14,7 @@ import { CartItem } from "./schemas/Cart";
 import { extendGraphqlSchema } from "./mutations";
 import { OrderItem } from "./schemas/OrderItem";
 import { Order } from "./schemas/Order";
+import { Role } from "./schemas/Role";
 
 const databaseURL =
   process.env.DATABASE_URL || "mongodb://localhost/keystone-sick-fits";
@@ -66,6 +67,7 @@ export default withAuth(
       CartItem,
       OrderItem,
       Order,
+      Role,
     }),
     extendGraphqlSchema, // extend graphQL Schema
     ui: {
