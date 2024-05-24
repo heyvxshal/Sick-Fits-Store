@@ -10,7 +10,7 @@ import { useState } from 'react';
 import nProgress from 'nprogress';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
-import { Router, useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/dist/client/router';
 import SickButton from './styles/SickButton';
 import { useCart } from '../lib/cartState';
 import { CURRENT_USER_QUERY } from './User';
@@ -46,10 +46,13 @@ function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
-  const { closeCart } = useCart();
+  const { toggleCart } = useCart();
+
   const [checkout, { error: graphQLError }] = useMutation(
-    CREATE_ORDER_MUTATION
+    CREATE_ORDER_MUTATION,
+    { refetchQueries: [{ query: CURRENT_USER_QUERY }] }
   );
+
   async function handleSubmit(e) {
     // 1. Stop the form from submitting and turn the loader one
     e.preventDefault();
@@ -72,6 +75,7 @@ function CheckoutForm() {
       nProgress.done();
       return; // stops checkout from happening
     }
+
     // 5. Send the token from step 3 to our keystone server, via a custom mutation!
     const order = await checkout({
       variables: {
@@ -82,8 +86,15 @@ function CheckoutForm() {
     console.log(order);
 
     // 6. Change the page to view the order
+    router.push({
+      pathname: `/order/[id]`,
+      query: {
+        id: order.data.checkout.id,
+      },
+    });
 
     // 7. Close the cart
+    toggleCart();
 
     // 8. turn the loader off
     setLoading(false);
