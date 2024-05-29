@@ -9,7 +9,7 @@ export default function formatMoney(amount = 0) {
     options.minimumFractionDigits = 0;
   }
 
-  const formatter = Intl.NumberFormat('en-CA', options);
+  const formatter = Intl.NumberFormat('en-US', options);
 
   return formatter.format(amount / 100);
 }
