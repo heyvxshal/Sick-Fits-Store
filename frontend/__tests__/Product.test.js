@@ -38,7 +38,7 @@ describe('<Product/>', () => {
       </MockedProvider>
     );
 
-    const img = screen.getAllByAltText(product.name);
+    const img = screen.getByAltText(product.name);
     expect(img).toBeInTheDocument();
   });
 });
